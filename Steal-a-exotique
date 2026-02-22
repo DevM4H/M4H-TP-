@@ -40,18 +40,42 @@ local function teleport(position)
 	hrp.CFrame = CFrame.new(position + Vector3.new(0, 3, 0))
 end
 
--- 🔥 Highlight légal
+-- 🔥 Highlight légal et noms
 local function addHighlight(character)
 	if character:FindFirstChild("LegalHighlight") then return end
 	
 	local highlight = Instance.new("Highlight")
 	highlight.Name = "LegalHighlight"
-	highlight.FillColor = Color3.fromRGB(0,255,0)
+	highlight.FillColor = Color3.fromRGB(255,0,0)
 	highlight.OutlineColor = Color3.fromRGB(255,255,255)
 	highlight.FillTransparency = 0.5
 	highlight.OutlineTransparency = 0
 	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 	highlight.Parent = character
+
+	-- Nom du joueur au-dessus
+	if not character:FindFirstChild("NameBillboard") then
+		local head = character:FindFirstChild("Head")
+		if head then
+			local billboard = Instance.new("BillboardGui")
+			billboard.Name = "NameBillboard"
+			billboard.Size = UDim2.new(0, 200, 0, 50)
+			billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+			billboard.AlwaysOnTop = true
+			billboard.Parent = head
+
+			local label = Instance.new("TextLabel")
+			label.Size = UDim2.new(1,0,1,0)
+			label.BackgroundTransparency = 1
+			label.Text = character.Name
+			label.TextColor3 = Color3.fromRGB(255,0,0)
+			label.TextStrokeTransparency = 0
+			label.TextStrokeColor3 = Color3.new(0,0,0)
+			label.TextScaled = true
+			label.Font = Enum.Font.GothamBold
+			label.Parent = billboard
+		end
+	end
 end
 
 local function setupPlayer(p)
@@ -72,14 +96,46 @@ end
 
 Players.PlayerAdded:Connect(setupPlayer)
 
+-- 🔥 Textes 3D au sol
+local function createWorldLabel(text, position, color)
+	local part = Instance.new("Part")
+	part.Size = Vector3.new(1,1,1)
+	part.Anchored = true
+	part.CanCollide = false
+	part.Transparency = 1
+	part.Position = position
+	part.Parent = workspace
+
+	local billboard = Instance.new("BillboardGui")
+	billboard.Size = UDim2.new(0, 200, 0, 50)
+	billboard.StudsOffset = Vector3.new(0, 3, 0)
+	billboard.AlwaysOnTop = true
+	billboard.Parent = part
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextColor3 = color
+	label.TextStrokeTransparency = 0
+	label.TextStrokeColor3 = Color3.new(0,0,0)
+	label.TextScaled = true
+	label.Font = Enum.Font.GothamBold
+	label.Parent = billboard
+end
+
+createWorldLabel("Teleportation 1", position1, Color3.fromRGB(255,0,0))
+createWorldLabel("Teleportation 2", position2, Color3.fromRGB(0,120,255))
+createWorldLabel("Teleportation 3", position3, Color3.fromRGB(0,255,0))
+
 -- 🎨 GUI
 local gui = Instance.new("ScreenGui")
 gui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame")
 frame.Parent = gui
-frame.Size = UDim2.new(0, 270, 0, 320)
-frame.Position = UDim2.new(1, -290, 0, 20)
+frame.Size = UDim2.new(0, 270, 0, 260) -- taille réduite car plus de Kick
+frame.Position = UDim2.new(1, -290, 0, 20) -- haut droite
 frame.BackgroundColor3 = Color3.fromRGB(20,20,30)
 frame.BorderSizePixel = 0
 frame.Active = true
@@ -139,22 +195,15 @@ end
 local button1 = createButton("Teleportation 1", 60, Color3.fromRGB(255,0,0))
 local button2 = createButton("Teleportation 2", 120, Color3.fromRGB(0,120,255))
 local button3 = createButton("Teleportation 3", 180, Color3.fromRGB(0,255,0))
-local kickButton = createButton("Kick", 240, Color3.fromRGB(255,50,50))
 
 button1.MouseButton1Click:Connect(function()
 	teleport(position1)
 end)
-
 button2.MouseButton1Click:Connect(function()
 	teleport(position2)
 end)
-
 button3.MouseButton1Click:Connect(function()
 	teleport(position3)
-end)
-
-kickButton.MouseButton1Click:Connect(function()
-	player:Kick("Vous avez quitté le script.")
 end)
 
 -- ➖ Toggle rouge avec apparition cascade
@@ -172,28 +221,19 @@ Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
 
 toggleBtn.MouseButton1Click:Connect(function()
 	if minimized then
-		
-		local tween = TweenService:Create(frame, TweenInfo.new(0.25), {Size = UDim2.new(0,270,0,320)})
+		local tween = TweenService:Create(frame, TweenInfo.new(0.25), {Size = UDim2.new(0,270,0,260)})
 		tween:Play()
-		
 		task.wait(0.06) button1.Visible = true
 		task.wait(0.06) button2.Visible = true
 		task.wait(0.06) button3.Visible = true
-		task.wait(0.06) kickButton.Visible = true
-		
 		minimized = false
 		toggleBtn.Text = "-"
-		
 	else
-		
 		button1.Visible = false
 		button2.Visible = false
 		button3.Visible = false
-		kickButton.Visible = false
-		
 		local tween = TweenService:Create(frame, TweenInfo.new(0.2), {Size = UDim2.new(0,270,0,45)})
 		tween:Play()
-		
 		minimized = true
 		toggleBtn.Text = "+"
 	end
@@ -223,9 +263,7 @@ end)
 UserInputService.InputChanged:Connect(function(input)
 	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement
 	or input.UserInputType == Enum.UserInputType.Touch) then
-		
 		local delta = input.Position - dragStart
-		
 		frame.Position = UDim2.new(
 			startPos.X.Scale,
 			startPos.X.Offset + delta.X,
