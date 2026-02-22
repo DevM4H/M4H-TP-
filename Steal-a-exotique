@@ -36,42 +36,41 @@ local position3 = Vector3.new(-331, 30, 101)
 local function teleport(position)
 	local character = player.Character or player.CharacterAdded:Wait()
 	local hrp = character:WaitForChild("HumanoidRootPart")
-
 	hrp.AssemblyLinearVelocity = Vector3.zero
 	hrp.CFrame = CFrame.new(position + Vector3.new(0, 3, 0))
 end
 
--- 🔥 Texte 3D
-local function createWorldLabel(text, position, color)
-	local part = Instance.new("Part")
-	part.Size = Vector3.new(1,1,1)
-	part.Anchored = true
-	part.CanCollide = false
-	part.Transparency = 1
-	part.Position = position
-	part.Parent = workspace
-
-	local billboard = Instance.new("BillboardGui")
-	billboard.Size = UDim2.new(0, 200, 0, 50)
-	billboard.StudsOffset = Vector3.new(0, 3, 0)
-	billboard.AlwaysOnTop = true
-	billboard.Parent = part
-
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1, 0, 1, 0)
-	label.BackgroundTransparency = 1
-	label.Text = text
-	label.TextColor3 = color
-	label.TextStrokeTransparency = 0
-	label.TextStrokeColor3 = Color3.new(0,0,0)
-	label.TextScaled = true
-	label.Font = Enum.Font.GothamBold
-	label.Parent = billboard
+-- 🔥 Highlight légal
+local function addHighlight(character)
+	if character:FindFirstChild("LegalHighlight") then return end
+	
+	local highlight = Instance.new("Highlight")
+	highlight.Name = "LegalHighlight"
+	highlight.FillColor = Color3.fromRGB(0,255,0)
+	highlight.OutlineColor = Color3.fromRGB(255,255,255)
+	highlight.FillTransparency = 0.5
+	highlight.OutlineTransparency = 0
+	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+	highlight.Parent = character
 end
 
-createWorldLabel("Teleportation 1", position1, Color3.fromRGB(255,0,0))
-createWorldLabel("Teleportation 2", position2, Color3.fromRGB(0,120,255))
-createWorldLabel("Teleportation 3", position3, Color3.fromRGB(0,255,0))
+local function setupPlayer(p)
+	if p == player then return end
+	
+	p.CharacterAdded:Connect(function(char)
+		addHighlight(char)
+	end)
+	
+	if p.Character then
+		addHighlight(p.Character)
+	end
+end
+
+for _, p in ipairs(Players:GetPlayers()) do
+	setupPlayer(p)
+end
+
+Players.PlayerAdded:Connect(setupPlayer)
 
 -- 🎨 GUI
 local gui = Instance.new("ScreenGui")
@@ -79,8 +78,8 @@ gui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame")
 frame.Parent = gui
-frame.Size = UDim2.new(0, 270, 0, 240)
-frame.Position = UDim2.new(0.5, -135, 0.5, -120)
+frame.Size = UDim2.new(0, 270, 0, 320)
+frame.Position = UDim2.new(1, -290, 0, 20)
 frame.BackgroundColor3 = Color3.fromRGB(20,20,30)
 frame.BorderSizePixel = 0
 frame.Active = true
@@ -110,7 +109,7 @@ tiktokLabel.Font = Enum.Font.Gotham
 tiktokLabel.TextSize = 14
 tiktokLabel.TextColor3 = Color3.fromRGB(255,255,255)
 
--- 🔘 Création boutons
+-- 🔘 Boutons
 local function createButton(text, y, color)
 	local btn = Instance.new("TextButton")
 	btn.Parent = frame
@@ -140,6 +139,7 @@ end
 local button1 = createButton("Teleportation 1", 60, Color3.fromRGB(255,0,0))
 local button2 = createButton("Teleportation 2", 120, Color3.fromRGB(0,120,255))
 local button3 = createButton("Teleportation 3", 180, Color3.fromRGB(0,255,0))
+local kickButton = createButton("Kick", 240, Color3.fromRGB(255,50,50))
 
 button1.MouseButton1Click:Connect(function()
 	teleport(position1)
@@ -153,7 +153,11 @@ button3.MouseButton1Click:Connect(function()
 	teleport(position3)
 end)
 
--- ➖ Toggle rouge avec apparition en cascade
+kickButton.MouseButton1Click:Connect(function()
+	player:Kick("Vous avez quitté le script.")
+end)
+
+-- ➖ Toggle rouge avec apparition cascade
 local minimized = false
 local toggleBtn = Instance.new("TextButton", frame)
 toggleBtn.Size = UDim2.new(0,30,0,30)
@@ -169,17 +173,13 @@ Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
 toggleBtn.MouseButton1Click:Connect(function()
 	if minimized then
 		
-		local tween = TweenService:Create(frame, TweenInfo.new(0.25), {Size = UDim2.new(0,270,0,240)})
+		local tween = TweenService:Create(frame, TweenInfo.new(0.25), {Size = UDim2.new(0,270,0,320)})
 		tween:Play()
 		
-		task.wait(0.07)
-		button1.Visible = true
-		
-		task.wait(0.07)
-		button2.Visible = true
-		
-		task.wait(0.07)
-		button3.Visible = true
+		task.wait(0.06) button1.Visible = true
+		task.wait(0.06) button2.Visible = true
+		task.wait(0.06) button3.Visible = true
+		task.wait(0.06) kickButton.Visible = true
 		
 		minimized = false
 		toggleBtn.Text = "-"
@@ -189,6 +189,7 @@ toggleBtn.MouseButton1Click:Connect(function()
 		button1.Visible = false
 		button2.Visible = false
 		button3.Visible = false
+		kickButton.Visible = false
 		
 		local tween = TweenService:Create(frame, TweenInfo.new(0.2), {Size = UDim2.new(0,270,0,45)})
 		tween:Play()
