@@ -1,0 +1,194 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+
+-- 📍 Positions corrigées
+local position1 = Vector3.new(-331, -4, 100)
+local position2 = Vector3.new(-348, -6, 9)
+
+-- ✅ Fonction Téléportation sécurisée
+local function teleport(position)
+	local character = player.Character or player.CharacterAdded:Wait()
+	local hrp = character:WaitForChild("HumanoidRootPart")
+
+	hrp.AssemblyLinearVelocity = Vector3.zero
+	hrp.CFrame = CFrame.new(position + Vector3.new(0, 3, 0))
+end
+
+-- 🔥 Texte 3D dans le monde
+local function createWorldLabel(text, position, color)
+	local part = Instance.new("Part")
+	part.Size = Vector3.new(1,1,1)
+	part.Anchored = true
+	part.CanCollide = false
+	part.Transparency = 1
+	part.Position = position
+	part.Parent = workspace
+
+	local billboard = Instance.new("BillboardGui")
+	billboard.Size = UDim2.new(0, 200, 0, 50)
+	billboard.StudsOffset = Vector3.new(0, 3, 0)
+	billboard.AlwaysOnTop = true
+	billboard.Parent = part
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextColor3 = color
+	label.TextStrokeTransparency = 0
+	label.TextStrokeColor3 = Color3.new(0,0,0)
+	label.TextScaled = true
+	label.Font = Enum.Font.GothamBold
+	label.Parent = billboard
+end
+
+-- 🔴 Texte Teleportation 1
+createWorldLabel("Teleportation 1", position1, Color3.fromRGB(255,0,0))
+
+-- 🔵 Texte Teleportation 2
+createWorldLabel("Teleportation 2", position2, Color3.fromRGB(0,120,255))
+
+-- 🎨 GUI
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Parent = gui
+frame.Size = UDim2.new(0, 270, 0, 180)
+frame.Position = UDim2.new(0.5, -135, 0.5, -90)
+frame.BackgroundColor3 = Color3.fromRGB(20,20,30)
+frame.BorderSizePixel = 0
+frame.Active = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,18)
+
+local stroke = Instance.new("UIStroke", frame)
+stroke.Color = Color3.fromRGB(60,60,90)
+stroke.Thickness = 2
+
+-- Nouveau titre
+local title = Instance.new("TextLabel")
+title.Parent = frame
+title.Size = UDim2.new(1,0,0,25)
+title.BackgroundTransparency = 1
+title.Text = "M4H - Tp Script"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.TextColor3 = Color3.new(1,1,1)
+
+-- Ligne TikTok sous le titre
+local tiktokLabel = Instance.new("TextLabel")
+tiktokLabel.Parent = frame
+tiktokLabel.Size = UDim2.new(1,0,0,15)
+tiktokLabel.Position = UDim2.new(0,0,0,25)
+tiktokLabel.BackgroundTransparency = 1
+tiktokLabel.Text = "Tiktok : @ DevManyy'"
+tiktokLabel.Font = Enum.Font.Gotham
+tiktokLabel.TextSize = 14
+tiktokLabel.TextColor3 = Color3.fromRGB(255,255,255)
+
+-- 🔘 Boutons
+local function createButton(text, y, color)
+	local btn = Instance.new("TextButton")
+	btn.Parent = frame
+	btn.Size = UDim2.new(0.8,0,0,45)
+	btn.Position = UDim2.new(0.1,0,0,y)
+	btn.Text = text
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 16
+	btn.TextColor3 = Color3.new(1,1,1)
+	btn.BackgroundColor3 = color
+	btn.BorderSizePixel = 0
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0,14)
+
+	btn.MouseButton1Click:Connect(function()
+		local tween = TweenService:Create(btn, TweenInfo.new(0.1), {
+			Size = UDim2.new(0.75,0,0,40)
+		})
+		tween:Play()
+		tween.Completed:Wait()
+		btn.Size = UDim2.new(0.8,0,0,45)
+	end)
+
+	return btn
+end
+
+local button1 = createButton("Teleportation 1", 60, Color3.fromRGB(255,0,0))
+local button2 = createButton("Teleportation 2", 120, Color3.fromRGB(0,120,255))
+
+button1.MouseButton1Click:Connect(function()
+	teleport(position1)
+end)
+
+button2.MouseButton1Click:Connect(function()
+	teleport(position2)
+end)
+
+-- ➖ Animation ouverture / fermeture avec un seul bouton rouge
+local minimized = false
+local toggleBtn = Instance.new("TextButton", frame)
+toggleBtn.Size = UDim2.new(0,30,0,30)
+toggleBtn.Position = UDim2.new(1, -50, 0, 5)
+toggleBtn.Text = "-"
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 20
+toggleBtn.BackgroundColor3 = Color3.fromRGB(255,0,0)
+toggleBtn.TextColor3 = Color3.new(1,1,1)
+toggleBtn.BorderSizePixel = 0
+Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
+
+toggleBtn.MouseButton1Click:Connect(function()
+	if minimized then
+		local tween = TweenService:Create(frame, TweenInfo.new(0.2), {Size = UDim2.new(0,270,0,180)})
+		tween:Play()
+		button1.Visible = true
+		button2.Visible = true
+		minimized = false
+		toggleBtn.Text = "-"
+	else
+		local tween = TweenService:Create(frame, TweenInfo.new(0.2), {Size = UDim2.new(0,270,0,45)})
+		tween:Play()
+		button1.Visible = false
+		button2.Visible = false
+		minimized = true
+		toggleBtn.Text = "+"
+	end
+end)
+
+-- 📱 Drag PC + Mobile
+local dragging = false
+local dragStart
+local startPos
+
+frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1
+	or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = frame.Position
+	end
+end)
+
+frame.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1
+	or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement
+	or input.UserInputType == Enum.UserInputType.Touch) then
+		
+		local delta = input.Position - dragStart
+		
+		frame.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
