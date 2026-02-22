@@ -1,8 +1,31 @@
+ -- 🔐 Whitelist
+local allowedPlayers = {
+	"Hvk11kzfr18",
+	"Jssusjsb6",
+	"ovespesss",
+	"Darknight35454",
+	"Mousioutablah"
+}
+
 local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local allowed = false
+for _, name in ipairs(allowedPlayers) do
+	if player.Name == name then
+		allowed = true
+		break
+	end
+end
+
+if not allowed then
+	player:Kick("Vous n'avez pas acheté le script (Tiktok : DevManyy)")
+	return
+end
+
+-- 🔧 Services restants
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
-
-local player = Players.LocalPlayer
 
 -- 📍 Positions corrigées
 local position1 = Vector3.new(-331, -4, 100)
