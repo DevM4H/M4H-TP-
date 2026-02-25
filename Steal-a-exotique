@@ -14,7 +14,8 @@ local whitelist = {
 	"Jssusjsb6",
 	"ovespesss",
 	"Darknight35454",
-	"Mousioutablah"
+	"Mousioutablah",
+    "Chargemeent"
 }
 
 if not table.find(whitelist, player.Name) then
