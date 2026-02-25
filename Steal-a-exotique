@@ -1,5 +1,15 @@
--- 🔐 Whitelist
-local allowedPlayers = {
+--// SERVICES
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+
+--// =========================
+-- 🔐 WHITELIST
+--// =========================
+
+local whitelist = {
 	"Hvk11kzfr18",
 	"Jssusjsb6",
 	"ovespesss",
@@ -7,242 +17,167 @@ local allowedPlayers = {
 	"Mousioutablah"
 }
 
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
-local allowed = false
-for _, name in ipairs(allowedPlayers) do
-	if player.Name == name then
-		allowed = true
-		break
-	end
-end
-
-if not allowed then
-	player:Kick("Vous n'avez pas acheté le script (Tiktok : Devmanyy)")
+if not table.find(whitelist, player.Name) then
+	player:Kick("Vous n'êtes pas autorisé | TikTok : @Devmanyy")
 	return
 end
 
--- 🔧 Services
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
+--// =========================
+-- 📍 POSITIONS
+--// =========================
 
--- 📍 Positions
-local position1 = Vector3.new(-331, -4, 100)
-local position2 = Vector3.new(-348, -6, 9)
-local position3 = Vector3.new(-331, 30, 101)
+local position1 = Vector3.new(-331,-4,101)
+local position2_base2 = Vector3.new(-344,-6,8)
+local position2_base3 = Vector3.new(-470,6,113)
+local position3 = Vector3.new(-331,30,101)
 
--- ✅ Téléportation
-local function teleport(position)
-	local character = player.Character or player.CharacterAdded:Wait()
-	local hrp = character:WaitForChild("HumanoidRootPart")
+local currentBase = nil
+local worldFolder = nil
+
+--// =========================
+-- 🚀 TELEPORT
+--// =========================
+
+local function teleport(pos)
+	local char = player.Character or player.CharacterAdded:Wait()
+	local hrp = char:WaitForChild("HumanoidRootPart")
 	hrp.AssemblyLinearVelocity = Vector3.zero
-	hrp.CFrame = CFrame.new(position + Vector3.new(0, 3, 0))
+	hrp.CFrame = CFrame.new(pos + Vector3.new(0,3,0))
 end
 
--- 🔥 Highlight légal et noms
-local function addHighlight(character)
-	if character:FindFirstChild("LegalHighlight") then return end
-	
-	local highlight = Instance.new("Highlight")
-	highlight.Name = "LegalHighlight"
-	highlight.FillColor = Color3.fromRGB(255,0,0)
-	highlight.OutlineColor = Color3.fromRGB(255,255,255)
-	highlight.FillTransparency = 0.5
-	highlight.OutlineTransparency = 0
-	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-	highlight.Parent = character
+--// =========================
+-- 🔴 ESP LEGAL
+--// =========================
 
-	-- Nom du joueur au-dessus
-	if not character:FindFirstChild("NameBillboard") then
-		local head = character:FindFirstChild("Head")
+local function setupESP(plr)
+	if plr == player then return end
+
+	local function apply(char)
+		if char:FindFirstChild("ESP_Highlight") then return end
+
+		local highlight = Instance.new("Highlight")
+		highlight.Name = "ESP_Highlight"
+		highlight.FillColor = Color3.fromRGB(255,0,0)
+		highlight.FillTransparency = 0.4
+		highlight.OutlineTransparency = 0
+		highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+		highlight.Parent = char
+
+		local head = char:WaitForChild("Head",2)
 		if head then
-			local billboard = Instance.new("BillboardGui")
-			billboard.Name = "NameBillboard"
-			billboard.Size = UDim2.new(0, 200, 0, 50)
-			billboard.StudsOffset = Vector3.new(0, 2.5, 0)
-			billboard.AlwaysOnTop = true
-			billboard.Parent = head
+			local bill = Instance.new("BillboardGui",head)
+			bill.Size = UDim2.new(0,140,0,30)
+			bill.StudsOffset = Vector3.new(0,2.5,0)
+			bill.AlwaysOnTop = true
 
-			local label = Instance.new("TextLabel")
-			label.Size = UDim2.new(1,0,1,0)
-			label.BackgroundTransparency = 1
-			label.Text = character.Name
-			label.TextColor3 = Color3.fromRGB(255,0,0)
-			label.TextStrokeTransparency = 0
-			label.TextStrokeColor3 = Color3.new(0,0,0)
-			label.TextScaled = true
-			label.Font = Enum.Font.GothamBold
-			label.Parent = billboard
+			local txt = Instance.new("TextLabel",bill)
+			txt.Size = UDim2.new(1,0,1,0)
+			txt.BackgroundTransparency = 1
+			txt.Text = plr.Name
+			txt.Font = Enum.Font.GothamBold
+			txt.TextSize = 18
+			txt.TextColor3 = Color3.fromRGB(255,0,0)
+			txt.TextStrokeTransparency = 0
+			txt.TextStrokeColor3 = Color3.new(0,0,0)
 		end
 	end
-end
 
-local function setupPlayer(p)
-	if p == player then return end
-	
-	p.CharacterAdded:Connect(function(char)
-		addHighlight(char)
-	end)
-	
-	if p.Character then
-		addHighlight(p.Character)
+	if plr.Character then
+		apply(plr.Character)
 	end
+
+	plr.CharacterAdded:Connect(function(char)
+		task.wait(1)
+		apply(char)
+	end)
 end
 
-for _, p in ipairs(Players:GetPlayers()) do
-	setupPlayer(p)
+for _,p in ipairs(Players:GetPlayers()) do
+	setupESP(p)
+end
+Players.PlayerAdded:Connect(setupESP)
+
+--// =========================
+-- 🌍 TEXTES 3D
+--// =========================
+
+local function clearWorld()
+	if worldFolder then
+		worldFolder:Destroy()
+	end
+	worldFolder = nil
 end
 
-Players.PlayerAdded:Connect(setupPlayer)
+local function createWorldFolder()
+	worldFolder = Instance.new("Folder")
+	worldFolder.Name = "TP_Texts"
+	worldFolder.Parent = workspace
+end
 
--- 🔥 Textes 3D au sol
-local function createWorldLabel(text, position, color)
+local function createText(text,pos,color)
 	local part = Instance.new("Part")
-	part.Size = Vector3.new(1,1,1)
 	part.Anchored = true
 	part.CanCollide = false
 	part.Transparency = 1
-	part.Position = position
-	part.Parent = workspace
+	part.Size = Vector3.new(1,1,1)
+	part.Position = pos + Vector3.new(0,4,0)
+	part.Parent = worldFolder
 
-	local billboard = Instance.new("BillboardGui")
-	billboard.Size = UDim2.new(0, 200, 0, 50)
-	billboard.StudsOffset = Vector3.new(0, 3, 0)
-	billboard.AlwaysOnTop = true
-	billboard.Parent = part
+	local bill = Instance.new("BillboardGui",part)
+	bill.Size = UDim2.new(0,200,0,50)
+	bill.AlwaysOnTop = true
 
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1, 0, 1, 0)
-	label.BackgroundTransparency = 1
-	label.Text = text
-	label.TextColor3 = color
-	label.TextStrokeTransparency = 0
-	label.TextStrokeColor3 = Color3.new(0,0,0)
-	label.TextScaled = true
-	label.Font = Enum.Font.GothamBold
-	label.Parent = billboard
+	local txt = Instance.new("TextLabel",bill)
+	txt.Size = UDim2.new(1,0,1,0)
+	txt.BackgroundTransparency = 1
+	txt.Text = text
+	txt.Font = Enum.Font.GothamBlack
+	txt.TextScaled = true
+	txt.TextColor3 = color
+	txt.TextStrokeTransparency = 0
+	txt.TextStrokeColor3 = Color3.new(0,0,0)
 end
 
-createWorldLabel("Teleportation 1", position1, Color3.fromRGB(255,0,0))
-createWorldLabel("Teleportation 2", position2, Color3.fromRGB(0,120,255))
-createWorldLabel("Teleportation 3", position3, Color3.fromRGB(0,255,0))
+local function updateWorldTexts()
+	clearWorld()
+	createWorldFolder()
 
+	createText("Teleportation 1", position1, Color3.fromRGB(255,70,70))
+
+	if currentBase == 2 then
+		createText("Teleportation 2", position2_base2, Color3.fromRGB(70,130,255))
+	elseif currentBase == 3 then
+		createText("Teleportation 2", position2_base3, Color3.fromRGB(70,130,255))
+	end
+
+	createText("Teleportation 3", position3, Color3.fromRGB(70,220,120))
+end
+
+--// =========================
 -- 🎨 GUI
-local gui = Instance.new("ScreenGui")
-gui.Parent = player:WaitForChild("PlayerGui")
+--// =========================
 
-local frame = Instance.new("Frame")
-frame.Parent = gui
-frame.Size = UDim2.new(0, 270, 0, 260) -- taille réduite car plus de Kick
-frame.Position = UDim2.new(1, -290, 0, 20) -- haut droite
-frame.BackgroundColor3 = Color3.fromRGB(20,20,30)
+local gui = Instance.new("ScreenGui")
+gui.ResetOnSpawn = false
+gui.Parent = player.PlayerGui
+
+local frame = Instance.new("Frame",gui)
+frame.BackgroundColor3 = Color3.fromRGB(25,25,35)
 frame.BorderSizePixel = 0
 frame.Active = true
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0,18)
+frame.ClipsDescendants = true
+Instance.new("UICorner",frame).CornerRadius = UDim.new(0,18)
 
-local stroke = Instance.new("UIStroke", frame)
-stroke.Color = Color3.fromRGB(60,60,90)
-stroke.Thickness = 2
+local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+local OPEN_SIZE = isMobile and UDim2.new(0,300,0,340) or UDim2.new(0,380,0,400)
+local CLOSED_SIZE = UDim2.new(OPEN_SIZE.X.Scale,OPEN_SIZE.X.Offset,0,60)
 
--- 🏷 Titre
-local title = Instance.new("TextLabel")
-title.Parent = frame
-title.Size = UDim2.new(1,0,0,25)
-title.BackgroundTransparency = 1
-title.Text = "M4H - Tp Script"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 18
-title.TextColor3 = Color3.new(1,1,1)
+frame.Size = OPEN_SIZE
+frame.Position = UDim2.new(0.5,-OPEN_SIZE.X.Offset/2,0.5,-OPEN_SIZE.Y.Offset/2)
 
-local tiktokLabel = Instance.new("TextLabel")
-tiktokLabel.Parent = frame
-tiktokLabel.Size = UDim2.new(1,0,0,15)
-tiktokLabel.Position = UDim2.new(0,0,0,25)
-tiktokLabel.BackgroundTransparency = 1
-tiktokLabel.Text = "Tiktok : @ DevManyy'"
-tiktokLabel.Font = Enum.Font.Gotham
-tiktokLabel.TextSize = 14
-tiktokLabel.TextColor3 = Color3.fromRGB(255,255,255)
+-- DRAG
 
--- 🔘 Boutons
-local function createButton(text, y, color)
-	local btn = Instance.new("TextButton")
-	btn.Parent = frame
-	btn.Size = UDim2.new(0.8,0,0,45)
-	btn.Position = UDim2.new(0.1,0,0,y)
-	btn.Text = text
-	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 16
-	btn.TextColor3 = Color3.new(1,1,1)
-	btn.BackgroundColor3 = color
-	btn.BorderSizePixel = 0
-	btn.Visible = true
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0,14)
-
-	btn.MouseButton1Click:Connect(function()
-		local tween = TweenService:Create(btn, TweenInfo.new(0.1), {
-			Size = UDim2.new(0.75,0,0,40)
-		})
-		tween:Play()
-		tween.Completed:Wait()
-		btn.Size = UDim2.new(0.8,0,0,45)
-	end)
-
-	return btn
-end
-
-local button1 = createButton("Teleportation 1", 60, Color3.fromRGB(255,0,0))
-local button2 = createButton("Teleportation 2", 120, Color3.fromRGB(0,120,255))
-local button3 = createButton("Teleportation 3", 180, Color3.fromRGB(0,255,0))
-
-button1.MouseButton1Click:Connect(function()
-	teleport(position1)
-end)
-button2.MouseButton1Click:Connect(function()
-	teleport(position2)
-end)
-button3.MouseButton1Click:Connect(function()
-	teleport(position3)
-end)
-
--- ➖ Toggle rouge avec apparition cascade
-local minimized = false
-local toggleBtn = Instance.new("TextButton", frame)
-toggleBtn.Size = UDim2.new(0,30,0,30)
-toggleBtn.Position = UDim2.new(1, -50, 0, 5)
-toggleBtn.Text = "-"
-toggleBtn.Font = Enum.Font.GothamBold
-toggleBtn.TextSize = 20
-toggleBtn.BackgroundColor3 = Color3.fromRGB(255,0,0)
-toggleBtn.TextColor3 = Color3.new(1,1,1)
-toggleBtn.BorderSizePixel = 0
-Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
-
-toggleBtn.MouseButton1Click:Connect(function()
-	if minimized then
-		local tween = TweenService:Create(frame, TweenInfo.new(0.25), {Size = UDim2.new(0,270,0,260)})
-		tween:Play()
-		task.wait(0.06) button1.Visible = true
-		task.wait(0.06) button2.Visible = true
-		task.wait(0.06) button3.Visible = true
-		minimized = false
-		toggleBtn.Text = "-"
-	else
-		button1.Visible = false
-		button2.Visible = false
-		button3.Visible = false
-		local tween = TweenService:Create(frame, TweenInfo.new(0.2), {Size = UDim2.new(0,270,0,45)})
-		tween:Play()
-		minimized = true
-		toggleBtn.Text = "+"
-	end
-end)
-
--- 📱 Drag PC + Mobile
-local dragging = false
-local dragStart
-local startPos
+local dragging, dragStart, startPos
 
 frame.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1
@@ -253,16 +188,8 @@ frame.InputBegan:Connect(function(input)
 	end
 end)
 
-frame.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1
-	or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = false
-	end
-end)
-
 UserInputService.InputChanged:Connect(function(input)
-	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement
-	or input.UserInputType == Enum.UserInputType.Touch) then
+	if dragging then
 		local delta = input.Position - dragStart
 		frame.Position = UDim2.new(
 			startPos.X.Scale,
@@ -272,3 +199,173 @@ UserInputService.InputChanged:Connect(function(input)
 		)
 	end
 end)
+
+UserInputService.InputEnded:Connect(function()
+	dragging = false
+end)
+
+-- HEADER
+
+local header = Instance.new("Frame",frame)
+header.Size = UDim2.new(1,0,0,60)
+header.BackgroundTransparency = 1
+
+local title = Instance.new("TextLabel",header)
+title.Position = UDim2.new(0,15,0,5)
+title.Size = UDim2.new(0,240,0,25)
+title.BackgroundTransparency = 1
+title.Text = "M4H - TP Script"
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.TextColor3 = Color3.new(1,1,1)
+
+local credit = Instance.new("TextLabel",header)
+credit.Position = UDim2.new(0,15,0,30)
+credit.Size = UDim2.new(0,240,0,20)
+credit.BackgroundTransparency = 1
+credit.Text = "TikTok : @Devmanyy"
+credit.TextXAlignment = Enum.TextXAlignment.Left
+credit.Font = Enum.Font.Gotham
+credit.TextSize = 13
+credit.TextColor3 = Color3.fromRGB(180,180,255)
+
+-- TOGGLE + BACK
+
+local toggle = Instance.new("TextButton",frame)
+toggle.Size = UDim2.new(0,28,0,28)
+toggle.Position = UDim2.new(1,-35,0,6)
+toggle.Text = "-"
+toggle.Font = Enum.Font.GothamBold
+toggle.TextSize = 18
+toggle.BackgroundColor3 = Color3.fromRGB(200,50,50)
+toggle.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner",toggle)
+
+local backButton = Instance.new("TextButton",frame)
+backButton.Size = UDim2.new(0,28,0,28)
+backButton.Position = UDim2.new(1,-70,0,6)
+backButton.Text = "<"
+backButton.Font = Enum.Font.GothamBold
+backButton.TextSize = 18
+backButton.BackgroundColor3 = Color3.fromRGB(70,130,255)
+backButton.TextColor3 = Color3.new(1,1,1)
+backButton.Visible = false
+Instance.new("UICorner",backButton)
+
+local open = true
+
+local function setVisible(state)
+	for _,v in ipairs(frame:GetChildren()) do
+		if v ~= toggle then
+			v.Visible = state
+		end
+	end
+	toggle.Visible = true
+end
+
+toggle.MouseButton1Click:Connect(function()
+	open = not open
+	if open then
+		toggle.Text = "-"
+		TweenService:Create(frame,TweenInfo.new(0.25),{Size = OPEN_SIZE}):Play()
+		setVisible(true)
+	else
+		toggle.Text = "+"
+		TweenService:Create(frame,TweenInfo.new(0.25),{Size = CLOSED_SIZE}):Play()
+		setVisible(false)
+	end
+end)
+
+-- CONTENU
+
+local content = Instance.new("Frame",frame)
+content.Position = UDim2.new(0,0,0,60)
+content.Size = UDim2.new(1,0,1,-60)
+content.BackgroundTransparency = 1
+
+local function clearContent()
+	for _,v in ipairs(content:GetChildren()) do
+		v:Destroy()
+	end
+end
+
+-- MENU BASE
+
+local function createBaseMenu()
+	clearContent()
+	backButton.Visible = false
+	currentBase = nil
+	clearWorld()
+
+	local welcome = Instance.new("TextLabel",content)
+	welcome.Size = UDim2.new(1,-20,0,70)
+	welcome.Position = UDim2.new(0,10,0,10)
+	welcome.BackgroundTransparency = 1
+	welcome.TextWrapped = true
+	welcome.Text = "Salut "..player.Name.." ✨\n\nDans quelle base êtes vous ?"
+	welcome.Font = Enum.Font.GothamBold
+	welcome.TextSize = 18
+	welcome.TextColor3 = Color3.new(1,1,1)
+
+	local function makeBase(name,posY,baseNumber,color)
+		local b = Instance.new("TextButton",content)
+		b.Size = UDim2.new(0.85,0,0,50)
+		b.Position = UDim2.new(0.075,0,0,posY)
+		b.Text = name
+		b.Font = Enum.Font.GothamBold
+		b.TextSize = 18
+		b.BackgroundColor3 = color
+		b.TextColor3 = Color3.new(1,1,1)
+		Instance.new("UICorner",b)
+
+		b.MouseButton1Click:Connect(function()
+			currentBase = baseNumber
+			updateWorldTexts()
+			createTeleportMenu()
+		end)
+	end
+
+	makeBase("Base 2",110,2,Color3.fromRGB(80,150,255))
+	makeBase("Base 3",180,3,Color3.fromRGB(80,220,140))
+end
+
+-- MENU TELEPORT
+
+function createTeleportMenu()
+	clearContent()
+	backButton.Visible = true
+
+	local function makeButton(text,posY,callback,color)
+		local b = Instance.new("TextButton",content)
+		b.Size = UDim2.new(0.85,0,0,50)
+		b.Position = UDim2.new(0.075,0,0,posY)
+		b.Text = text
+		b.Font = Enum.Font.GothamBold
+		b.TextSize = 16
+		b.BackgroundColor3 = color
+		b.TextColor3 = Color3.new(1,1,1)
+		Instance.new("UICorner",b)
+		b.MouseButton1Click:Connect(callback)
+	end
+
+	makeButton("Téléportation 1",40,function()
+		teleport(position1)
+	end,Color3.fromRGB(255,70,70))
+
+	makeButton("Téléportation 2",110,function()
+		if currentBase == 2 then
+			teleport(position2_base2)
+		else
+			teleport(position2_base3)
+		end
+	end,Color3.fromRGB(70,130,255))
+
+	makeButton("Téléportation 3",180,function()
+		teleport(position3)
+	end,Color3.fromRGB(70,220,120))
+end
+
+backButton.MouseButton1Click:Connect(createBaseMenu)
+
+createBaseMenu()
