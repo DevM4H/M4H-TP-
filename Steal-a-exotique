@@ -15,7 +15,8 @@ local whitelist = {
 	"ovespesss",
 	"Darknight35454",
 	"Mousioutablah",
-    "Chargemeent"
+	"Chargemeent",
+	"stock_brainrot0190"
 }
 
 if not table.find(whitelist, player.Name) then
@@ -170,13 +171,13 @@ frame.ClipsDescendants = true
 Instance.new("UICorner",frame).CornerRadius = UDim.new(0,18)
 
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-local OPEN_SIZE = isMobile and UDim2.new(0,300,0,340) or UDim2.new(0,380,0,400)
+local OPEN_SIZE = isMobile and UDim2.new(0,300,0,330) or UDim2.new(0,380,0,390)
 local CLOSED_SIZE = UDim2.new(OPEN_SIZE.X.Scale,OPEN_SIZE.X.Offset,0,60)
 
 frame.Size = OPEN_SIZE
 frame.Position = UDim2.new(0.5,-OPEN_SIZE.X.Offset/2,0.5,-OPEN_SIZE.Y.Offset/2)
 
--- DRAG
+-- DRAG PC + MOBILE
 
 local dragging, dragStart, startPos
 
@@ -278,7 +279,7 @@ toggle.MouseButton1Click:Connect(function()
 	end
 end)
 
--- CONTENU
+-- CONTENT
 
 local content = Instance.new("Frame",frame)
 content.Position = UDim2.new(0,0,0,60)
@@ -291,7 +292,7 @@ local function clearContent()
 	end
 end
 
--- MENU BASE
+-- BASE MENU
 
 local function createBaseMenu()
 	clearContent()
@@ -331,7 +332,7 @@ local function createBaseMenu()
 	makeBase("Base 3",180,3,Color3.fromRGB(80,220,140))
 end
 
--- MENU TELEPORT
+-- TELEPORT MENU
 
 function createTeleportMenu()
 	clearContent()
