@@ -21,7 +21,7 @@ local whitelist = {
 	"Lerexmommm",
 	"matteplayer906",
 	"helirox56", -- ✅ AJOUTÉ
-	"familly614108" -- ✅ AJOUTÉ
+	"familly624108" -- ✅ AJOUTÉ
 }
 
 if not table.find(whitelist, player.Name) then
