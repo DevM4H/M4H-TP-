@@ -1,3 +1,7 @@
+--// =========================
+--// SCRIPT 1
+--// =========================
+
 --// SERVICES
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -10,23 +14,23 @@ local player = Players.LocalPlayer
 --// =========================
 
 local whitelist = {
-	"Hvk11kzfr18",
-	"Jssusjsb6",
-	"ovespesss",
-	"Darknight35454",
-	"Mousioutablah",
-	"Chargemeent",
-	"stock_brainrot0190",
-	"moulous3",
-	"Lerexmommm",
-	"matteplayer906",
-	"helirox56", -- ✅ AJOUTÉ
-	"familly624108" -- ✅ AJOUTÉ
+"Hvk11kzfr18",
+"Jssusjsb6",
+"ovespesss",
+"Darknight35454",
+"Mousioutablah",
+"Chargemeent",
+"stock_brainrot0190",
+"moulous3",
+"Lerexmommm",
+"matteplayer906",
+"helirox56",
+"familly624108"
 }
 
 if not table.find(whitelist, player.Name) then
-	player:Kick("Vous n'êtes pas autorisé | TikTok : @Devmanyy")
-	return
+player:Kick("Vous n'êtes pas autorisé | TikTok : @Devmanyy")
+return
 end
 
 --// =========================
@@ -46,10 +50,10 @@ local worldFolder = nil
 --// =========================
 
 local function teleport(pos)
-	local char = player.Character or player.CharacterAdded:Wait()
-	local hrp = char:WaitForChild("HumanoidRootPart")
-	hrp.AssemblyLinearVelocity = Vector3.zero
-	hrp.CFrame = CFrame.new(pos + Vector3.new(0,3,0))
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+hrp.AssemblyLinearVelocity = Vector3.zero
+hrp.CFrame = CFrame.new(pos + Vector3.new(0,3,0))
 end
 
 --// =========================
@@ -57,50 +61,51 @@ end
 --// =========================
 
 local function setupESP(plr)
-	if plr == player then return end
+if plr == player then return end
 
-	local function apply(char)
-		if char:FindFirstChild("ESP_Highlight") then return end
+local function apply(char)
+if char:FindFirstChild("ESP_Highlight") then return end
 
-		local highlight = Instance.new("Highlight")
-		highlight.Name = "ESP_Highlight"
-		highlight.FillColor = Color3.fromRGB(255,0,0)
-		highlight.FillTransparency = 0.4
-		highlight.OutlineTransparency = 0
-		highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-		highlight.Parent = char
+local highlight = Instance.new("Highlight")
+highlight.Name = "ESP_Highlight"
+highlight.FillColor = Color3.fromRGB(255,0,0)
+highlight.FillTransparency = 0.4
+highlight.OutlineTransparency = 0
+highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+highlight.Parent = char
 
-		local head = char:WaitForChild("Head",2)
-		if head then
-			local bill = Instance.new("BillboardGui",head)
-			bill.Size = UDim2.new(0,140,0,30)
-			bill.StudsOffset = Vector3.new(0,2.5,0)
-			bill.AlwaysOnTop = true
+local head = char:WaitForChild("Head",2)
+if head then
+local bill = Instance.new("BillboardGui",head)
+bill.Size = UDim2.new(0,140,0,30)
+bill.StudsOffset = Vector3.new(0,2.5,0)
+bill.AlwaysOnTop = true
 
-			local txt = Instance.new("TextLabel",bill)
-			txt.Size = UDim2.new(1,0,1,0)
-			txt.BackgroundTransparency = 1
-			txt.Text = plr.Name
-			txt.Font = Enum.Font.GothamBold
-			txt.TextSize = 18
-			txt.TextColor3 = Color3.fromRGB(255,0,0)
-			txt.TextStrokeTransparency = 0
-			txt.TextStrokeColor3 = Color3.new(0,0,0)
-		end
-	end
+local txt = Instance.new("TextLabel",bill)
+txt.Size = UDim2.new(1,0,1,0)
+txt.BackgroundTransparency = 1
+txt.Text = plr.Name
+txt.Font = Enum.Font.GothamBold
+txt.TextSize = 18
+txt.TextColor3 = Color3.fromRGB(255,0,0)
+txt.TextStrokeTransparency = 0
+txt.TextStrokeColor3 = Color3.new(0,0,0)
+end
+end
 
-	if plr.Character then
-		apply(plr.Character)
-	end
+if plr.Character then
+apply(plr.Character)
+end
 
-	plr.CharacterAdded:Connect(function(char)
-		task.wait(1)
-		apply(char)
-	end)
+plr.CharacterAdded:Connect(function(char)
+task.wait(1)
+apply(char)
+end)
+
 end
 
 for _,p in ipairs(Players:GetPlayers()) do
-	setupESP(p)
+setupESP(p)
 end
 Players.PlayerAdded:Connect(setupESP)
 
@@ -109,55 +114,55 @@ Players.PlayerAdded:Connect(setupESP)
 --// =========================
 
 local function clearWorld()
-	if worldFolder then
-		worldFolder:Destroy()
-	end
-	worldFolder = nil
+if worldFolder then
+worldFolder:Destroy()
+end
+worldFolder = nil
 end
 
 local function createWorldFolder()
-	worldFolder = Instance.new("Folder")
-	worldFolder.Name = "TP_Texts"
-	worldFolder.Parent = workspace
+worldFolder = Instance.new("Folder")
+worldFolder.Name = "TP_Texts"
+worldFolder.Parent = workspace
 end
 
 local function createText(text,pos,color)
-	local part = Instance.new("Part")
-	part.Anchored = true
-	part.CanCollide = false
-	part.Transparency = 1
-	part.Size = Vector3.new(1,1,1)
-	part.Position = pos + Vector3.new(0,4,0)
-	part.Parent = worldFolder
+local part = Instance.new("Part")
+part.Anchored = true
+part.CanCollide = false
+part.Transparency = 1
+part.Size = Vector3.new(1,1,1)
+part.Position = pos + Vector3.new(0,4,0)
+part.Parent = worldFolder
 
-	local bill = Instance.new("BillboardGui",part)
-	bill.Size = UDim2.new(0,200,0,50)
-	bill.AlwaysOnTop = true
+local bill = Instance.new("BillboardGui",part)
+bill.Size = UDim2.new(0,200,0,50)
+bill.AlwaysOnTop = true
 
-	local txt = Instance.new("TextLabel",bill)
-	txt.Size = UDim2.new(1,0,1,0)
-	txt.BackgroundTransparency = 1
-	txt.Text = text
-	txt.Font = Enum.Font.GothamBlack
-	txt.TextScaled = true
-	txt.TextColor3 = color
-	txt.TextStrokeTransparency = 0
-	txt.TextStrokeColor3 = Color3.new(0,0,0)
+local txt = Instance.new("TextLabel",bill)
+txt.Size = UDim2.new(1,0,1,0)
+txt.BackgroundTransparency = 1
+txt.Text = text
+txt.Font = Enum.Font.GothamBlack
+txt.TextScaled = true
+txt.TextColor3 = color
+txt.TextStrokeTransparency = 0
+txt.TextStrokeColor3 = Color3.new(0,0,0)
 end
 
 local function updateWorldTexts()
-	clearWorld()
-	createWorldFolder()
+clearWorld()
+createWorldFolder()
 
-	createText("Teleportation 1", position1, Color3.fromRGB(255,70,70))
+createText("Teleportation 1", position1, Color3.fromRGB(255,70,70))
 
-	if currentBase == 2 then
-		createText("Teleportation 2", position2_base2, Color3.fromRGB(70,130,255))
-	elseif currentBase == 3 then
-		createText("Teleportation 2", position2_base3, Color3.fromRGB(70,130,255))
-	end
+if currentBase == 2 then
+createText("Teleportation 2", position2_base2, Color3.fromRGB(70,130,255))
+elseif currentBase == 3 then
+createText("Teleportation 2", position2_base3, Color3.fromRGB(70,130,255))
+end
 
-	createText("Teleportation 3", position3, Color3.fromRGB(70,220,120))
+createText("Teleportation 3", position3, Color3.fromRGB(70,220,120))
 end
 
 --// =========================
@@ -182,36 +187,32 @@ local CLOSED_SIZE = UDim2.new(OPEN_SIZE.X.Scale,OPEN_SIZE.X.Offset,0,60)
 frame.Size = OPEN_SIZE
 frame.Position = UDim2.new(0.5,-OPEN_SIZE.X.Offset/2,0.5,-OPEN_SIZE.Y.Offset/2)
 
--- DRAG PC + MOBILE
-
 local dragging, dragStart, startPos
 
 frame.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1
-	or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = true
-		dragStart = input.Position
-		startPos = frame.Position
-	end
+if input.UserInputType == Enum.UserInputType.MouseButton1
+or input.UserInputType == Enum.UserInputType.Touch then
+dragging = true
+dragStart = input.Position
+startPos = frame.Position
+end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-	if dragging then
-		local delta = input.Position - dragStart
-		frame.Position = UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset + delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y
-		)
-	end
+if dragging then
+local delta = input.Position - dragStart
+frame.Position = UDim2.new(
+startPos.X.Scale,
+startPos.X.Offset + delta.X,
+startPos.Y.Scale,
+startPos.Y.Offset + delta.Y
+)
+end
 end)
 
 UserInputService.InputEnded:Connect(function()
-	dragging = false
+dragging = false
 end)
-
--- HEADER
 
 local header = Instance.new("Frame",frame)
 header.Size = UDim2.new(1,0,0,60)
@@ -237,8 +238,6 @@ credit.Font = Enum.Font.Gotham
 credit.TextSize = 13
 credit.TextColor3 = Color3.fromRGB(180,180,255)
 
--- TOGGLE + BACK
-
 local toggle = Instance.new("TextButton",frame)
 toggle.Size = UDim2.new(0,28,0,28)
 toggle.Position = UDim2.new(1,-35,0,6)
@@ -263,28 +262,26 @@ Instance.new("UICorner",backButton)
 local open = true
 
 local function setVisible(state)
-	for _,v in ipairs(frame:GetChildren()) do
-		if v ~= toggle then
-			v.Visible = state
-		end
-	end
-	toggle.Visible = true
+for _,v in ipairs(frame:GetChildren()) do
+if v ~= toggle then
+v.Visible = state
+end
+end
+toggle.Visible = true
 end
 
 toggle.MouseButton1Click:Connect(function()
-	open = not open
-	if open then
-		toggle.Text = "-"
-		TweenService:Create(frame,TweenInfo.new(0.25),{Size = OPEN_SIZE}):Play()
-		setVisible(true)
-	else
-		toggle.Text = "+"
-		TweenService:Create(frame,TweenInfo.new(0.25),{Size = CLOSED_SIZE}):Play()
-		setVisible(false)
-	end
+open = not open
+if open then
+toggle.Text = "-"
+TweenService:Create(frame,TweenInfo.new(0.25),{Size = OPEN_SIZE}):Play()
+setVisible(true)
+else
+toggle.Text = "+"
+TweenService:Create(frame,TweenInfo.new(0.25),{Size = CLOSED_SIZE}):Play()
+setVisible(false)
+end
 end)
-
--- CONTENT
 
 local content = Instance.new("Frame",frame)
 content.Position = UDim2.new(0,0,0,60)
@@ -292,87 +289,276 @@ content.Size = UDim2.new(1,0,1,-60)
 content.BackgroundTransparency = 1
 
 local function clearContent()
-	for _,v in ipairs(content:GetChildren()) do
-		v:Destroy()
-	end
+for _,v in ipairs(content:GetChildren()) do
+v:Destroy()
 end
-
--- BASE MENU
+end
 
 local function createBaseMenu()
-	clearContent()
-	backButton.Visible = false
-	currentBase = nil
-	clearWorld()
+clearContent()
+backButton.Visible = false
+currentBase = nil
+clearWorld()
 
-	local welcome = Instance.new("TextLabel",content)
-	welcome.Size = UDim2.new(1,-20,0,70)
-	welcome.Position = UDim2.new(0,10,0,10)
-	welcome.BackgroundTransparency = 1
-	welcome.TextWrapped = true
-	welcome.Text = "Salut "..player.Name.." ✨\n\nDans quelle base êtes vous ?"
-	welcome.Font = Enum.Font.GothamBold
-	welcome.TextSize = 18
-	welcome.TextColor3 = Color3.new(1,1,1)
+local welcome = Instance.new("TextLabel",content)
+welcome.Size = UDim2.new(1,-20,0,70)
+welcome.Position = UDim2.new(0,10,0,10)
+welcome.BackgroundTransparency = 1
+welcome.TextWrapped = true
+welcome.Text = "Salut "..player.Name.." ✨\n\nDans quelle base êtes vous ?"
+welcome.Font = Enum.Font.GothamBold
+welcome.TextSize = 18
+welcome.TextColor3 = Color3.new(1,1,1)
 
-	local function makeBase(name,posY,baseNumber,color)
-		local b = Instance.new("TextButton",content)
-		b.Size = UDim2.new(0.85,0,0,50)
-		b.Position = UDim2.new(0.075,0,0,posY)
-		b.Text = name
-		b.Font = Enum.Font.GothamBold
-		b.TextSize = 18
-		b.BackgroundColor3 = color
-		b.TextColor3 = Color3.new(1,1,1)
-		Instance.new("UICorner",b)
+local function makeBase(name,posY,baseNumber,color)
+local b = Instance.new("TextButton",content)
+b.Size = UDim2.new(0.85,0,0,50)
+b.Position = UDim2.new(0.075,0,0,posY)
+b.Text = name
+b.Font = Enum.Font.GothamBold
+b.TextSize = 18
+b.BackgroundColor3 = color
+b.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner",b)
 
-		b.MouseButton1Click:Connect(function()
-			currentBase = baseNumber
-			updateWorldTexts()
-			createTeleportMenu()
-		end)
-	end
-
-	makeBase("Base 2",110,2,Color3.fromRGB(80,150,255))
-	makeBase("Base 3",180,3,Color3.fromRGB(80,220,140))
+b.MouseButton1Click:Connect(function()
+currentBase = baseNumber
+updateWorldTexts()
+createTeleportMenu()
+end)
 end
 
--- TELEPORT MENU
+makeBase("Base 2",110,2,Color3.fromRGB(80,150,255))
+makeBase("Base 3",180,3,Color3.fromRGB(80,220,140))
+end
 
 function createTeleportMenu()
-	clearContent()
-	backButton.Visible = true
+clearContent()
+backButton.Visible = true
 
-	local function makeButton(text,posY,callback,color)
-		local b = Instance.new("TextButton",content)
-		b.Size = UDim2.new(0.85,0,0,50)
-		b.Position = UDim2.new(0.075,0,0,posY)
-		b.Text = text
-		b.Font = Enum.Font.GothamBold
-		b.TextSize = 16
-		b.BackgroundColor3 = color
-		b.TextColor3 = Color3.new(1,1,1)
-		Instance.new("UICorner",b)
-		b.MouseButton1Click:Connect(callback)
-	end
+local function makeButton(text,posY,callback,color)
+local b = Instance.new("TextButton",content)
+b.Size = UDim2.new(0.85,0,0,50)
+b.Position = UDim2.new(0.075,0,0,posY)
+b.Text = text
+b.Font = Enum.Font.GothamBold
+b.TextSize = 16
+b.BackgroundColor3 = color
+b.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner",b)
+b.MouseButton1Click:Connect(callback)
+end
 
-	makeButton("Téléportation 1",40,function()
-		teleport(position1)
-	end,Color3.fromRGB(255,70,70))
+makeButton("Téléportation 1",40,function()
+teleport(position1)
+end,Color3.fromRGB(255,70,70))
 
-	makeButton("Téléportation 2",110,function()
-		if currentBase == 2 then
-			teleport(position2_base2)
-		else
-			teleport(position2_base3)
-		end
-	end,Color3.fromRGB(70,130,255))
+makeButton("Téléportation 2",110,function()
+if currentBase == 2 then
+teleport(position2_base2)
+else
+teleport(position2_base3)
+end
+end,Color3.fromRGB(70,130,255))
 
-	makeButton("Téléportation 3",180,function()
-		teleport(position3)
-	end,Color3.fromRGB(70,220,120))
+makeButton("Téléportation 3",180,function()
+teleport(position3)
+end,Color3.fromRGB(70,220,120))
 end
 
 backButton.MouseButton1Click:Connect(createBaseMenu)
-
 createBaseMenu()
+
+--// =========================
+--// SCRIPT 2
+--// =========================
+
+local RunService = game:GetService("RunService")
+local CollectionService = game:GetService("CollectionService")
+
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+local AUTO_TAG = "AutoHold"
+
+local allowedKeywords = { "steal", "vol" }
+local blockedTexts = { grab=true, sell=true, prendre=true, vendre=true }
+
+local holding = false
+local holdStartTime = nil
+local currentHoldingPrompt = nil
+local currentHoldDuration = 0
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AutoHoldProgress"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local progressBg = Instance.new("Frame")
+progressBg.Size = UDim2.new(0,400,0,24)
+progressBg.Position = UDim2.new(0.5,-200,0,50)
+progressBg.BackgroundColor3 = Color3.fromRGB(30,30,30)
+progressBg.BorderSizePixel = 0
+progressBg.BackgroundTransparency = 0.2
+progressBg.Visible = false
+progressBg.Parent = screenGui
+
+local bgCorner = Instance.new("UICorner")
+bgCorner.CornerRadius = UDim.new(0,12)
+bgCorner.Parent = progressBg
+
+local progressFill = Instance.new("Frame")
+progressFill.Size = UDim2.new(0,0,1,0)
+progressFill.BackgroundColor3 = Color3.fromRGB(0,200,255)
+progressFill.BorderSizePixel = 0
+progressFill.Parent = progressBg
+
+local fillCorner = Instance.new("UICorner")
+fillCorner.CornerRadius = UDim.new(0,12)
+fillCorner.Parent = progressFill
+
+local progressLabel = Instance.new("TextLabel")
+progressLabel.Size = UDim2.new(0,50,1,0)
+progressLabel.Position = UDim2.new(0,5,0,0)
+progressLabel.BackgroundTransparency = 1
+progressLabel.TextColor3 = Color3.fromRGB(255,255,255)
+progressLabel.TextScaled = true
+progressLabel.Font = Enum.Font.GothamBold
+progressLabel.TextXAlignment = Enum.TextXAlignment.Left
+progressLabel.TextYAlignment = Enum.TextYAlignment.Center
+progressLabel.Parent = progressBg
+
+local function getPromptText(prompt)
+local text = prompt.ActionText
+if text == "" then text = prompt.ObjectText end
+if text == "" and prompt.Parent then text = prompt.Parent.Name end
+return string.lower(text)
+end
+
+local function isAllowedPrompt(prompt)
+local text = getPromptText(prompt)
+if blockedTexts[text] then return false end
+for _, kw in ipairs(allowedKeywords) do
+if string.find(text, kw, 1, true) then
+return true
+end
+end
+return false
+end
+
+local function getPromptPosition(prompt)
+local parent = prompt.Parent
+if parent:IsA("BasePart") then return parent.Position end
+if parent:IsA("Attachment") then return parent.WorldPosition end
+return humanoidRootPart.Position
+end
+
+for _, obj in pairs(workspace:GetDescendants()) do
+if obj:IsA("ProximityPrompt") and isAllowedPrompt(obj) then
+CollectionService:AddTag(obj,AUTO_TAG)
+end
+end
+
+workspace.DescendantAdded:Connect(function(obj)
+if obj:IsA("ProximityPrompt") and isAllowedPrompt(obj) then
+CollectionService:AddTag(obj,AUTO_TAG)
+end
+end)
+
+local function lerpColor(c1,c2,t)
+return Color3.new(c1.R + (c2.R - c1.R)*t,
+c1.G + (c2.G - c1.G)*t,
+c1.B + (c2.B - c1.B)*t)
+end
+
+local function getProgressColor(progress)
+if progress <= 0.25 then
+return lerpColor(Color3.fromRGB(0,255,0), Color3.fromRGB(255,255,0), progress/0.25)
+elseif progress <= 0.5 then
+return lerpColor(Color3.fromRGB(255,255,0), Color3.fromRGB(255,165,0), (progress-0.25)/0.25)
+elseif progress <= 0.75 then
+return lerpColor(Color3.fromRGB(255,165,0), Color3.fromRGB(255,0,0), (progress-0.5)/0.25)
+else
+return Color3.fromRGB(255,0,0)
+end
+end
+
+local function updateProgressBar(progress)
+progressBg.Visible = true
+progressFill.Size = UDim2.new(progress,0,1,0)
+progressFill.BackgroundColor3 = getProgressColor(progress)
+progressLabel.Text = string.format("%.0f%%", progress*100)
+progressLabel.Position = UDim2.new(progress,5,0,0)
+end
+
+local function resetProgressBar()
+progressFill.Size = UDim2.new(0,0,1,0)
+progressLabel.Position = UDim2.new(0,5,0,0)
+progressLabel.Text = "0%"
+progressBg.Visible = false
+end
+
+RunService.Heartbeat:Connect(function()
+if not character or not character:FindFirstChild("HumanoidRootPart") then
+resetProgressBar()
+return
+end
+
+humanoidRootPart = character.HumanoidRootPart
+local rootPos = humanoidRootPart.Position
+
+if holding and currentHoldingPrompt then
+local prompt = currentHoldingPrompt
+local valid = prompt.Enabled and isAllowedPrompt(prompt)
+if (rootPos - getPromptPosition(prompt)).Magnitude > prompt.MaxActivationDistance then
+valid = false
+end
+
+if not valid then
+prompt:InputHoldEnd()
+holding = false
+currentHoldingPrompt = nil
+holdStartTime = nil
+resetProgressBar()
+else
+local progress = math.clamp((tick() - holdStartTime)/currentHoldDuration,0,1)
+updateProgressBar(progress)
+end
+end
+
+if not holding then
+local closestPrompt = nil
+local closestDist = math.huge
+
+for _, prompt in pairs(CollectionService:GetTagged(AUTO_TAG)) do
+if prompt.Enabled then
+local dist = (rootPos - getPromptPosition(prompt)).Magnitude
+if dist <= prompt.MaxActivationDistance and dist < closestDist then
+closestDist = dist
+closestPrompt = prompt
+end
+end
+end
+
+if closestPrompt then
+holding = true
+currentHoldingPrompt = closestPrompt
+currentHoldDuration = closestPrompt.HoldDuration
+holdStartTime = tick()
+closestPrompt:InputHoldBegin()
+else
+resetProgressBar()
+end
+end
+end)
+
+player.CharacterAdded:Connect(function(newChar)
+character = newChar
+humanoidRootPart = newChar:WaitForChild("HumanoidRootPart")
+holding = false
+currentHoldingPrompt = nil
+holdStartTime = nil
+resetProgressBar()
+end)
