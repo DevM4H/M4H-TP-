@@ -25,7 +25,8 @@ local whitelist = {
 "Lerexmommm",
 "matteplayer906",
 "helirox56",
-"familly624108"
+"familly624108",
+"souf_ninja76"
 }
 
 if not table.find(whitelist, player.Name) then
