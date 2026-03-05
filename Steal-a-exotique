@@ -12,23 +12,6 @@ local CollectionService = game:GetService("CollectionService")
 local player = Players.LocalPlayer
 
 --// =========================
--- 🔐 WHITELIST
---// =========================
-
-local whitelist = {
-"Hvk11kzfr18","Jssusjsb6","ovespesss","Darknight35454","Mousioutablah",
-"Chargemeent","stock_brainrot0190","moulous3","Lerexmommm","matteplayer906",
-"helirox56","familly624108","Fadi6nueve","letounsi06","Xxdu220",
-"stockeur49","Cherry_dog2025","Brabra_72100brbr","sablami9","ilayzox92",
-"louanlebg21","French_Plants7"
-}
-
-if not table.find(whitelist, player.Name) then
-	player:Kick("Vous n'êtes pas autorisé | TikTok : @Devmanyy")
-	return
-end
-
---// =========================
 -- 📍 POSITIONS
 --// =========================
 
@@ -52,7 +35,7 @@ local function teleport(pos)
 end
 
 --// =========================
--- 🔴 ESP LEGAL
+-- 🔴 ESP
 --// =========================
 
 local function setupESP(plr)
@@ -260,7 +243,7 @@ toggle.MouseButton1Click:Connect(function()
 		TweenService:Create(frame,TweenInfo.new(0.25),{Size = CLOSED_SIZE}):Play()
 		setVisible(false)
 	end
-end)
+end
 
 local content = Instance.new("Frame",frame)
 content.Position = UDim2.new(0,0,0,60)
@@ -338,7 +321,7 @@ backButton.MouseButton1Click:Connect(createBaseMenu)
 createBaseMenu()
 
 --// =========================
---// SCRIPT 2 (NOUVEAU AUTO)
+--// SCRIPT 2 (AUTO HOLD)
 --// =========================
 
 local character = player.Character or player.CharacterAdded:Wait()
@@ -361,7 +344,7 @@ screenGui.Parent = player:WaitForChild("PlayerGui")
 
 local progressBg = Instance.new("Frame")
 progressBg.Size = UDim2.new(0,400,0,24)
-progressBg.Position = UDim2.new(0.5,-200,0,60)
+progressBg.Position = UDim2.new(0.5,-200,0,90)
 progressBg.BackgroundColor3 = Color3.fromRGB(30,30,30)
 progressBg.BorderSizePixel = 0
 progressBg.BackgroundTransparency = 0.2
@@ -465,6 +448,7 @@ RunService.Heartbeat:Connect(function()
 
 	local closestPrompt = nil
 	local closestDist = math.huge
+
 	for _, prompt in pairs(CollectionService:GetTagged(AUTO_TAG)) do
 		if prompt.Enabled then
 			local dist = (rootPos - getPromptPosition(prompt)).Magnitude
@@ -476,7 +460,7 @@ RunService.Heartbeat:Connect(function()
 	end
 
 	if currentHoldingPrompt and currentHoldingPrompt ~= closestPrompt then
-		currentHoldingPrompt:InputHoldEnd()
+		pcall(function() currentHoldingPrompt:InputHoldEnd() end)
 		currentHoldingPrompt = nil
 		holdStartTime = nil
 		resetProgressBar()
