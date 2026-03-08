@@ -12,6 +12,23 @@ local CollectionService = game:GetService("CollectionService")
 local player = Players.LocalPlayer
 
 --// =========================
+-- 🔐 WHITELIST
+--// =========================
+
+local whitelist = {
+"Hvk11kzfr18","Jssusjsb6","ovespesss","Darknight35454","Mousioutablah",
+"Chargemeent","stock_brainrot0190","moulous3","Lerexmommm","matteplayer906",
+"helirox56","familly624108","Fadi6nueve","letounsi06","Xxdu220",
+"stockeur49","Cherry_dog2025","Brabra_72100brbr","sablami9","ilayzox92",
+"Louanlebg21","French_plants7"
+}
+
+if not table.find(whitelist, player.Name) then
+player:Kick("Vous n'êtes pas autorisé | TikTok : @Devmanyy")
+return
+end
+
+--// =========================
 -- 📍 POSITIONS
 --// =========================
 
