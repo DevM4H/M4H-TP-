@@ -39,6 +39,36 @@ local priorityBrainrots = {
 "Los Meowlitos"
 }
 
+-- =====================================================
+-- SECONDARY BRAINROTS
+-- =====================================================
+local secondaryBrainrots = {
+"Los Spaghettis",
+"Fragrama and Chocrama",
+"Spaghetti Tualetti",
+"Festive 67",
+"Ginger Gerat",
+"La Ginger Sekolah",
+"Spooky and Pumpky",
+"La Casa Boo",
+"La Secret Combinasion",
+"Love Love Bear",
+"Reinito Sleighito",
+"Ketupat Bros",
+"Cooki and Milki",
+"Rosey and Teddy",
+"Popcuru and Fizzuru",
+"La Supreme Combinasion",
+"Rosetti Tualetti",
+"Garama and Madundung",
+"Burguro And Fryuro",
+"Capitano Moby",
+"Cerberus",
+"Tralaledon",
+"Los Sekolahs",
+"La Food Combinasion"
+}
+
 local stolenBrainrots = {}
 
 -- =====================================================
