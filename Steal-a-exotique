@@ -37,7 +37,6 @@ local priorityBrainrots = {
 "Headless Horseman",
 "Hydra Dragon Cannelloni"
 "Los Meowlitos"
-
 }
 
 local stolenBrainrots = {}
