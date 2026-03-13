@@ -390,6 +390,29 @@ local function startLoop()
 			end
 
 		end
+for _,brainrotName in ipairs(secondaryBrainrots) do
+
+	local models = findBrainrot(brainrotName)
+
+	for _,model in pairs(models) do
+
+		if stolenBrainrots[model] then continue end
+
+		local dist = getDistance(model)
+
+		if dist < 8 then
+			continue
+		end
+
+		if isHigh(model) then
+			table.insert(highTargets,{model,brainrotName,dist})
+		else
+			table.insert(groundTargets,{model,brainrotName,dist})
+		end
+
+	end
+
+end
 
 		table.sort(groundTargets,function(a,b)
 			return a[3] > b[3]
