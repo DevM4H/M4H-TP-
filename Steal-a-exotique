@@ -44,14 +44,30 @@ end)
 -- PRIORITY BRAINROTS
 -- =====================================================
 local priorityBrainrots = {
-"Strawberry Elephant",
-"Meowl",
-"Skibidi Toilet",
-"Dragon Gingerini",
-"Dragon Cannelloni",
-"Headless Horseman",
-"Hydra Dragon Cannelloni",
-"Los Meowlitos"
+    "Strawberry Elephant",
+    "Meowl",
+    "Skibidi Toilet",
+    "Dragon Gingerini",
+    "Dragon Cannelloni",
+    "Headless Horseman",
+    "Hydra Dragon Cannelloni",
+    "Los Meowlitos",
+    "Fragrama and Chocrama",
+    "Spooky and Pumpky",
+    "Cooki and Milki",
+    "Popcuru and Fizzuru",
+    "Ketupat Bros",
+    "Rosey and Teddy",
+    "La Supreme Combinasion",
+    "Cerberus",
+    "Burguro And Fryuro",
+    "La Food Combinasion",
+    "Capitano Moby",
+    "Los Spaghettis",
+    "Reinito Sleighito",
+    "La Casa Boo",
+    "Ginger Gerat",
+    "Los Sekolahs"
 }
 
 local stolenBrainrots = {}
