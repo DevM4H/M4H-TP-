@@ -12,8 +12,6 @@ local CollectionService = game:GetService("CollectionService")
 
 local player = Players.LocalPlayer
 
-
-
 -- =====================================================
 -- CHARACTER
 -- =====================================================
@@ -21,8 +19,8 @@ local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
 player.CharacterAdded:Connect(function(c)
-	character = c
-	humanoidRootPart = c:WaitForChild("HumanoidRootPart")
+character = c
+humanoidRootPart = c:WaitForChild("HumanoidRootPart")
 end)
 
 -- =====================================================
@@ -37,36 +35,6 @@ local priorityBrainrots = {
 "Headless Horseman",
 "Hydra Dragon Cannelloni",
 "Los Meowlitos"
-}
-
--- =====================================================
--- SECONDARY BRAINROTS
--- =====================================================
-local secondaryBrainrots = {
-"Los Spaghettis",
-"Fragrama and Chocrama",
-"Spaghetti Tualetti",
-"Festive 67",
-"Ginger Gerat",
-"La Ginger Sekolah",
-"Spooky and Pumpky",
-"La Casa Boo",
-"La Secret Combinasion",
-"Love Love Bear",
-"Reinito Sleighito",
-"Ketupat Bros",
-"Cooki and Milki",
-"Rosey and Teddy",
-"Popcuru and Fizzuru",
-"La Supreme Combinasion",
-"Rosetti Tualetti",
-"Garama and Madundung",
-"Burguro And Fryuro",
-"Capitano Moby",
-"Cerberus",
-"Tralaledon",
-"Los Sekolahs",
-"La Food Combinasion"
 }
 
 local stolenBrainrots = {}
@@ -159,7 +127,7 @@ layout.Padding = UDim.new(0,6)
 layout.Parent = scroll
 
 layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	scroll.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y+10)
+scroll.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y+10)
 end)
 
 -- =====================================================
@@ -199,7 +167,7 @@ Instance.new("UICorner",kickButton)
 -- KICK BUTTON
 -- =====================================================
 kickButton.MouseButton1Click:Connect(function()
-	player:Kick("Devmanyy save you!")
+player:Kick("Devmanyy save you!")
 end)
 
 -- =====================================================
@@ -207,17 +175,17 @@ end)
 -- =====================================================
 saveButton.MouseButton1Click:Connect(function()
 
-	local char = player.Character
-	if not char then return end
+local char = player.Character  
+if not char then return end  
 
-	local hrp = char:FindFirstChild("HumanoidRootPart")
-	if not hrp then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")  
+if not hrp then return end  
 
-	savedPosition = hrp.CFrame
+savedPosition = hrp.CFrame  
 
-	saveButton.BackgroundColor3 = Color3.fromRGB(120,180,255)
-	statusLabel.Text = "Status: Position Saved"
-	statusLabel.TextColor3 = Color3.fromRGB(0,255,120)
+saveButton.BackgroundColor3 = Color3.fromRGB(120,180,255)  
+statusLabel.Text = "Status: Position Saved"  
+statusLabel.TextColor3 = Color3.fromRGB(0,255,120)
 
 end)
 
@@ -231,46 +199,46 @@ local startPos
 
 frame.InputBegan:Connect(function(input)
 
-	if input.UserInputType == Enum.UserInputType.MouseButton1 
-	or input.UserInputType == Enum.UserInputType.Touch then
+if input.UserInputType == Enum.UserInputType.MouseButton1   
+or input.UserInputType == Enum.UserInputType.Touch then  
 
-		dragging = true
-		dragStart = input.Position
-		startPos = frame.Position
+	dragging = true  
+	dragStart = input.Position  
+	startPos = frame.Position  
 
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
+	input.Changed:Connect(function()  
+		if input.UserInputState == Enum.UserInputState.End then  
+			dragging = false  
+		end  
+	end)  
 
-	end
+end
 
 end)
 
 frame.InputChanged:Connect(function(input)
 
-	if input.UserInputType == Enum.UserInputType.MouseMovement 
-	or input.UserInputType == Enum.UserInputType.Touch then
-		dragInput = input
-	end
+if input.UserInputType == Enum.UserInputType.MouseMovement   
+or input.UserInputType == Enum.UserInputType.Touch then  
+	dragInput = input  
+end
 
 end)
 
 UserInputService.InputChanged:Connect(function(input)
 
-	if input == dragInput and dragging then
+if input == dragInput and dragging then  
 
-		local delta = input.Position - dragStart
+	local delta = input.Position - dragStart  
 
-		frame.Position = UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset + delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y
-		)
+	frame.Position = UDim2.new(  
+		startPos.X.Scale,  
+		startPos.X.Offset + delta.X,  
+		startPos.Y.Scale,  
+		startPos.Y.Offset + delta.Y  
+	)  
 
-	end
+end
 
 end)
 
@@ -283,17 +251,17 @@ local closedSize = UDim2.new(0,300,0,70)
 
 toggle.MouseButton1Click:Connect(function()
 
-	open = not open
+open = not open  
 
-	if open then
-		toggle.Text = "-"
-		scroll.Visible = true
-		TweenService:Create(frame,TweenInfo.new(0.25),{Size=openSize}):Play()
-	else
-		toggle.Text = "+"
-		scroll.Visible = false
-		TweenService:Create(frame,TweenInfo.new(0.25),{Size=closedSize}):Play()
-	end
+if open then  
+	toggle.Text = "-"  
+	scroll.Visible = true  
+	TweenService:Create(frame,TweenInfo.new(0.25),{Size=openSize}):Play()  
+else  
+	toggle.Text = "+"  
+	scroll.Visible = false  
+	TweenService:Create(frame,TweenInfo.new(0.25),{Size=closedSize}):Play()  
+end
 
 end)
 
@@ -302,15 +270,16 @@ end)
 -- =====================================================
 local function findBrainrot(name)
 
-	local results = {}
+local results = {}  
 
-	for _,obj in pairs(workspace:GetDescendants()) do
-		if obj:IsA("Model") and obj.Name == name then
-			table.insert(results,obj)
-		end
-	end
+for _,obj in pairs(workspace:GetDescendants()) do  
+	if obj:IsA("Model") and obj.Name == name then  
+		table.insert(results,obj)  
+	end  
+end  
 
-	return results
+return results
+
 end
 
 -- =====================================================
@@ -318,16 +287,16 @@ end
 -- =====================================================
 local function teleportToModel(model)
 
-	local char = player.Character
-	if not char then return end
+local char = player.Character  
+if not char then return end  
 
-	local hrp = char:FindFirstChild("HumanoidRootPart")
-	if not hrp then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")  
+if not hrp then return end  
 
-	local part = model:FindFirstChildWhichIsA("BasePart",true)
-	if not part then return end
+local part = model:FindFirstChildWhichIsA("BasePart",true)  
+if not part then return end  
 
-	hrp.CFrame = part.CFrame * CFrame.new(0,0,-5)
+hrp.CFrame = part.CFrame * CFrame.new(0,0,-5)
 
 end
 
@@ -336,10 +305,10 @@ end
 -- =====================================================
 local function isHigh(model)
 
-	local part = model:FindFirstChildWhichIsA("BasePart",true)
-	if not part then return false end
+local part = model:FindFirstChildWhichIsA("BasePart",true)  
+if not part then return false end  
 
-	return part.Position.Y - humanoidRootPart.Position.Y > 8
+return part.Position.Y - humanoidRootPart.Position.Y > 8
 
 end
 
@@ -348,10 +317,10 @@ end
 -- =====================================================
 local function getDistance(model)
 
-	local part = model:FindFirstChildWhichIsA("BasePart",true)
-	if not part then return 0 end
+local part = model:FindFirstChildWhichIsA("BasePart",true)  
+if not part then return 0 end  
 
-	return (humanoidRootPart.Position - part.Position).Magnitude
+return (humanoidRootPart.Position - part.Position).Magnitude
 
 end
 
@@ -362,134 +331,111 @@ local running = false
 
 local function startLoop()
 
-	while running do
+while running do  
 
-		local groundTargets = {}
-		local highTargets = {}
+	local groundTargets = {}  
+	local highTargets = {}  
 
-		for _,brainrotName in ipairs(priorityBrainrots) do
+	for _,brainrotName in ipairs(priorityBrainrots) do  
 
-			local models = findBrainrot(brainrotName)
+		local models = findBrainrot(brainrotName)  
 
-			for _,model in pairs(models) do
+		for _,model in pairs(models) do  
 
-				if stolenBrainrots[model] then continue end
+			if stolenBrainrots[model] then continue end  
 
-				local dist = getDistance(model)
+			local dist = getDistance(model)  
 
-				if dist < 8 then
-					continue
-				end
+			if dist < 8 then  
+				continue  
+			end  
 
-				if isHigh(model) then
-					table.insert(highTargets,{model,brainrotName,dist})
-				else
-					table.insert(groundTargets,{model,brainrotName,dist})
-				end
+			if isHigh(model) then  
+				table.insert(highTargets,{model,brainrotName,dist})  
+			else  
+				table.insert(groundTargets,{model,brainrotName,dist})  
+			end  
 
-			end
+		end  
 
-		end
-for _,brainrotName in ipairs(secondaryBrainrots) do
+	end  
 
-	local models = findBrainrot(brainrotName)
+	table.sort(groundTargets,function(a,b)  
+		return a[3] > b[3]  
+	end)  
 
-	for _,model in pairs(models) do
+	table.sort(highTargets,function(a,b)  
+		return a[3] > b[3]  
+	end)  
 
-		if stolenBrainrots[model] then continue end
+	local function process(list)  
 
-		local dist = getDistance(model)
+		for _,data in pairs(list) do  
 
-		if dist < 8 then
-			continue
-		end
+			if not running then break end  
 
-		if isHigh(model) then
-			table.insert(highTargets,{model,brainrotName,dist})
-		else
-			table.insert(groundTargets,{model,brainrotName,dist})
-		end
+			local model = data[1]  
+			local brainrotName = data[2]  
 
-	end
+			statusLabel.Text = "Status: Stealing "..brainrotName  
+			statusLabel.TextColor3 = Color3.fromRGB(0,255,120)  
+
+			teleportToModel(model)  
+
+			task.wait(0.3)  
+
+			stolenBrainrots[model] = true  
+
+			if savedPosition then  
+				local char = player.Character  
+				if char and char:FindFirstChild("HumanoidRootPart") then  
+					char.HumanoidRootPart.CFrame = savedPosition  
+				end  
+			end  
+
+			task.wait(0.1)  
+
+		end  
+
+	end  
+
+	process(groundTargets)  
+	process(highTargets)  
+
+	task.wait(0.5)  
 
 end
-
-		table.sort(groundTargets,function(a,b)
-			return a[3] > b[3]
-		end)
-
-		table.sort(highTargets,function(a,b)
-			return a[3] > b[3]
-		end)
-
-		local function process(list)
-
-			for _,data in pairs(list) do
-
-				if not running then break end
-
-				local model = data[1]
-				local brainrotName = data[2]
-
-				statusLabel.Text = "Status: Stealing "..brainrotName
-				statusLabel.TextColor3 = Color3.fromRGB(0,255,120)
-
-				teleportToModel(model)
-
-				task.wait(0.3)
-
-				stolenBrainrots[model] = true
-
-				if savedPosition then
-					local char = player.Character
-					if char and char:FindFirstChild("HumanoidRootPart") then
-						char.HumanoidRootPart.CFrame = savedPosition
-					end
-				end
-
-				task.wait(0.1)
-
-			end
-
-		end
-
-		process(groundTargets)
-		process(highTargets)
-
-		task.wait(0.5)
-
-	end
 
 end
 
 stealButton.MouseButton1Click:Connect(function()
 
-	running = not running
+running = not running  
 
-	if running then
+if running then  
 
-		stolenBrainrots = {}
+	stolenBrainrots = {}  
 
-		stealButton.BackgroundColor3 = Color3.fromRGB(120,255,120)
-		statusLabel.Text = "Status: Steal All Enabled"
-		statusLabel.TextColor3 = Color3.fromRGB(0,255,120)
+	stealButton.BackgroundColor3 = Color3.fromRGB(120,255,120)  
+	statusLabel.Text = "Status: Steal All Enabled"  
+	statusLabel.TextColor3 = Color3.fromRGB(0,255,120)  
 
-		if savedPosition then
-			local char = player.Character
-			if char and char:FindFirstChild("HumanoidRootPart") then
-				char.HumanoidRootPart.CFrame = savedPosition
-			end
-		end
+	if savedPosition then  
+		local char = player.Character  
+		if char and char:FindFirstChild("HumanoidRootPart") then  
+			char.HumanoidRootPart.CFrame = savedPosition  
+		end  
+	end  
 
-		task.spawn(startLoop)
+	task.spawn(startLoop)  
 
-	else
+else  
 
-		stealButton.BackgroundColor3 = Color3.fromRGB(200,60,60)
-		statusLabel.Text = "Status: Steal All Stopped"
-		statusLabel.TextColor3 = Color3.fromRGB(255,80,80)
+	stealButton.BackgroundColor3 = Color3.fromRGB(200,60,60)  
+	statusLabel.Text = "Status: Steal All Stopped"  
+	statusLabel.TextColor3 = Color3.fromRGB(255,80,80)  
 
-	end
+end
 
 end)
 
@@ -498,52 +444,52 @@ end)
 -- =====================================================
 local function createESP(target)
 
-	if target == player then return end
+if target == player then return end  
 
-	local function apply(char)
+local function apply(char)  
 
-		if char:FindFirstChild("M4H_ESP") then return end
+	if char:FindFirstChild("M4H_ESP") then return end  
 
-		local highlight = Instance.new("Highlight")
-		highlight.Name = "M4H_ESP"
-		highlight.FillColor = Color3.fromRGB(255,0,0)
-		highlight.OutlineColor = Color3.fromRGB(255,255,255)
-		highlight.FillTransparency = 0.4
-		highlight.Parent = char
+	local highlight = Instance.new("Highlight")  
+	highlight.Name = "M4H_ESP"  
+	highlight.FillColor = Color3.fromRGB(255,0,0)  
+	highlight.OutlineColor = Color3.fromRGB(255,255,255)  
+	highlight.FillTransparency = 0.4  
+	highlight.Parent = char  
 
-		local head = char:FindFirstChild("Head")
-		if head then
+	local head = char:FindFirstChild("Head")  
+	if head then  
 
-			local billboard = Instance.new("BillboardGui")
-			billboard.Name = "M4H_NAME"
-			billboard.Size = UDim2.new(0,120,0,30)
-			billboard.StudsOffset = Vector3.new(0,2,0)
-			billboard.AlwaysOnTop = true
-			billboard.Parent = head
+		local billboard = Instance.new("BillboardGui")  
+		billboard.Name = "M4H_NAME"  
+		billboard.Size = UDim2.new(0,120,0,30)  
+		billboard.StudsOffset = Vector3.new(0,2,0)  
+		billboard.AlwaysOnTop = true  
+		billboard.Parent = head  
 
-			local label = Instance.new("TextLabel")
-			label.Size = UDim2.new(1,0,1,0)
-			label.BackgroundTransparency = 1
-			label.Text = target.Name
-			label.TextColor3 = Color3.fromRGB(255,60,60)
-			label.Font = Enum.Font.GothamBold
-			label.TextScaled = true
-			label.Parent = billboard
+		local label = Instance.new("TextLabel")  
+		label.Size = UDim2.new(1,0,1,0)  
+		label.BackgroundTransparency = 1  
+		label.Text = target.Name  
+		label.TextColor3 = Color3.fromRGB(255,60,60)  
+		label.Font = Enum.Font.GothamBold  
+		label.TextScaled = true  
+		label.Parent = billboard  
 
-		end
+	end  
 
-	end
+end  
 
-	if target.Character then
-		apply(target.Character)
-	end
+if target.Character then  
+	apply(target.Character)  
+end  
 
-	target.CharacterAdded:Connect(apply)
+target.CharacterAdded:Connect(apply)
 
 end
 
 for _,p in pairs(Players:GetPlayers()) do
-	createESP(p)
+createESP(p)
 end
 
 Players.PlayerAdded:Connect(createESP)
