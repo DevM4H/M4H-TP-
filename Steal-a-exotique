@@ -24,7 +24,7 @@ local whitelist = {
 "NB2z6","Scuf_stuffy","adamkanite","yayab0004","Rilesou","timdu622",
 "adam82049","Pakotine38k","roblox_user_9042387245","Ryzon_72","p_55i",
 "Shake44244n","mangikebab","Ryzon_2e","tritri27gamer","Tyzonbbe","RYN_6ii",
-"sfl_nurix","reda19925","Neska33xD","Saader74","SAADER766"
+"sfl_nurix","reda19925","Neska33xD","Saader74","SAADER766","DarkFantasieArtist"
 }
 if not table.find(whitelist, player.Name) then
 	player:Kick("You are not authorized | TikTok: @Devmanyy")
