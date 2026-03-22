@@ -30,6 +30,7 @@ if not table.find(whitelist, player.Name) then
 	player:Kick("You are not authorized | TikTok: @Devmanyy")
 	return
 end
+
 -- =====================================================
 -- CHARACTER
 -- =====================================================
@@ -72,10 +73,6 @@ local priorityBrainrots = {
 }
 
 local stolenBrainrots = {}
-
--- =====================================================
--- SAVE POSITION
--- =====================================================
 local savedPosition = nil
 
 -- =====================================================
@@ -416,7 +413,7 @@ while running do
 
 			teleportToModel(model)  
 
-			task.wait(0.3)  
+			task.wait(1.1) -- HOLD SYNC AVEC PROMPT  
 
 			stolenBrainrots[model] = true  
 
@@ -529,7 +526,7 @@ end
 Players.PlayerAdded:Connect(createESP)
 
 --// =========================
---// AUTO PROXIMITY PROMPT (FIRE)
+--// AUTO PROXIMITY PROMPT (HOLD 1.1s + WAIT 1.1s)
 --// =========================
 
 local AUTO_TAG = "AutoFire"
@@ -542,165 +539,69 @@ prendre=true,
 vendre=true
 }
 
-local lastPrompt = nil
 local lastFireTime = 0
-local fireCooldown = 0.1
-
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "AutoStealBar"
-screenGui.ResetOnSpawn = false
-screenGui.IgnoreGuiInset = true
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-screenGui.Parent = player:WaitForChild("PlayerGui")
-
-local progressBg = Instance.new("Frame")
-progressBg.Size = UDim2.new(0,400,0,24)
-progressBg.Position = UDim2.new(0.5,-200,0,80)
-progressBg.BackgroundColor3 = Color3.fromRGB(30,30,30)
-progressBg.BackgroundTransparency = 0.2
-progressBg.BorderSizePixel = 0
-progressBg.Visible = false
-progressBg.Parent = screenGui
-Instance.new("UICorner",progressBg).CornerRadius = UDim.new(0,12)
-
-local progressFill = Instance.new("Frame",progressBg)
-progressFill.Size = UDim2.new(0,0,1,0)
-progressFill.BorderSizePixel = 0
-Instance.new("UICorner",progressFill).CornerRadius = UDim.new(0,12)
-
-local percentLabel = Instance.new("TextLabel",progressBg)
-percentLabel.Size = UDim2.new(0,60,1,0)
-percentLabel.Position = UDim2.new(0,6,0,0)
-percentLabel.BackgroundTransparency = 1
-percentLabel.TextColor3 = Color3.new(1,1,1)
-percentLabel.TextScaled = true
-percentLabel.Font = Enum.Font.GothamBold
-percentLabel.Text = "0%"
+local holdDuration = 1.1
+local fireCooldown = 1.1
+local holding = false
 
 local function getPromptText(prompt)
-
 local text = prompt.ActionText
-
-if text == "" then
-text = prompt.ObjectText
-end
-
-if text == "" and prompt.Parent then
-text = prompt.Parent.Name
-end
-
+if text == "" then text = prompt.ObjectText end
+if text == "" and prompt.Parent then text = prompt.Parent.Name end
 return string.lower(text)
-
 end
 
 local function isAllowedPrompt(prompt)
-
 local text = getPromptText(prompt)
-
-if blockedTexts[text] then
-return false
-end
-
+if blockedTexts[text] then return false end
 for _,kw in ipairs(allowedKeywords) do
-if string.find(text,kw,1,true) then
-return true
+if string.find(text,kw,1,true) then return true end
 end
-end
-
 return false
-
 end
 
 local function getPromptPosition(prompt)
-
 local parent = prompt.Parent
-
-if parent:IsA("BasePart") then
-return parent.Position
-end
-
-if parent:IsA("Attachment") then
-return parent.WorldPosition
-end
-
+if parent:IsA("BasePart") then return parent.Position end
+if parent:IsA("Attachment") then return parent.WorldPosition end
 return humanoidRootPart.Position
-
 end
 
 for _,obj in pairs(workspace:GetDescendants()) do
-
 if obj:IsA("ProximityPrompt") and isAllowedPrompt(obj) then
 CollectionService:AddTag(obj,AUTO_TAG)
 end
-
 end
 
 workspace.DescendantAdded:Connect(function(obj)
-
 if obj:IsA("ProximityPrompt") and isAllowedPrompt(obj) then
 CollectionService:AddTag(obj,AUTO_TAG)
 end
-
 end)
 
-local function lerpColor(c1,c2,t)
+local function fireHold(prompt)
+if holding then return end
+holding = true
 
-return Color3.new(
-c1.R+(c2.R-c1.R)*t,
-c1.G+(c2.G-c1.G)*t,
-c1.B+(c2.B-c1.B)*t
-)
+pcall(function()
+prompt:InputHoldBegin()
+end)
 
+task.wait(holdDuration)
+
+pcall(function()
+prompt:InputHoldEnd()
+end)
+
+lastFireTime = tick()
+holding = false
 end
 
-local function getProgressColor(progress)
+RunService.Heartbeat:Connect(function()
 
-if progress <= 0.25 then
-return lerpColor(Color3.fromRGB(0,255,0),Color3.fromRGB(255,255,0),progress/0.25)
-
-elseif progress <= 0.5 then
-return lerpColor(Color3.fromRGB(255,255,0),Color3.fromRGB(255,165,0),(progress-0.25)/0.25)
-
-elseif progress <= 0.75 then
-return lerpColor(Color3.fromRGB(255,165,0),Color3.fromRGB(255,0,0),(progress-0.5)/0.25)
-
-else
-return Color3.fromRGB(255,0,0)
-end
-
-end
-
-local progress = 0
-
-local function updateBar(dt)
-
-progress = math.clamp(progress + dt*4,0,1)
-
-progressBg.Visible = true
-progressFill.Size = UDim2.new(progress,0,1,0)
-progressFill.BackgroundColor3 = getProgressColor(progress)
-
-percentLabel.Text = math.floor(progress*100).."%"
-percentLabel.Position = UDim2.new(progress,6,0,0)
-
-end
-
-local function resetBar()
-
-progress = 0
-progressBg.Visible = false
-progressFill.Size = UDim2.new(0,0,1,0)
-percentLabel.Text = "0%"
-percentLabel.Position = UDim2.new(0,6,0,0)
-
-end
-
-RunService.Heartbeat:Connect(function(dt)
-
-if not character or not character:FindFirstChild("HumanoidRootPart") then
-resetBar()
-return
-end
+if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+if holding then return end
+if tick() - lastFireTime < fireCooldown then return end
 
 humanoidRootPart = character.HumanoidRootPart
 local rootPos = humanoidRootPart.Position
@@ -709,48 +610,24 @@ local closestPrompt = nil
 local closestDist = math.huge
 
 for _,prompt in pairs(CollectionService:GetTagged(AUTO_TAG)) do
-
 if prompt.Enabled then
-
 local dist = (rootPos - getPromptPosition(prompt)).Magnitude
-
 if dist <= prompt.MaxActivationDistance and dist < closestDist then
 closestDist = dist
 closestPrompt = prompt
 end
-
 end
-
 end
 
 if closestPrompt then
-
-updateBar(dt)
-
-if tick() - lastFireTime > fireCooldown then
-
-pcall(function()
-fireproximityprompt(closestPrompt)
+task.spawn(function()
+fireHold(closestPrompt)
 end)
-
-lastPrompt = closestPrompt
-lastFireTime = tick()
-
-end
-
-else
-
-resetBar()
-
 end
 
 end)
 
 player.CharacterAdded:Connect(function(char)
-
 character = char
 humanoidRootPart = char:WaitForChild("HumanoidRootPart")
-
-resetBar()
-
 end)
